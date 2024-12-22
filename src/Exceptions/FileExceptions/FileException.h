@@ -5,9 +5,11 @@
 
 #include "../Exception.h"
 
+#include <string>
+
 namespace Exceptions
 {
-    class FileException : virtual public Exception
+    class FileException : public Exception
     {
         protected:
             std::string _exceptionMsg = "File Error: ";
@@ -20,7 +22,7 @@ namespace Exceptions
             FileException(std::string fileName, std::string msg): 
                 Exception(msg), _fileName{ fileName } {}
 
-            std::string what() const override = 0;
+            virtual std::string what() const override = 0;
     };
 };
 

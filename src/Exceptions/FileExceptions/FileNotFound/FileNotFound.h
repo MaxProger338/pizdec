@@ -3,13 +3,13 @@
 #ifndef __FILE_NOT_FOUND_H__
 #define __FILE_NOT_FOUND_H__
 
-#include "../FileExceptins.h"
+#include "../FileException.h"
 
 #include <string>
 
 namespace Exceptions
 {
-    class FileNotFound : virtual public FileException
+    class FileNotFound : public FileException
     {
         protected:
             std::string error = "File Not Found: ";
@@ -19,7 +19,7 @@ namespace Exceptions
                 FileException(fileName) {}
 
             FileNotFound(std::string fileName, std::string msg): 
-                FileException(msg, fileName) {}
+                FileException(fileName, msg) {}
 
             std::string what() const override
             {
@@ -31,9 +31,12 @@ namespace Exceptions
 
                 exceptionFinal += _fileName;
 
-                exceptionFinal += '\n';
-                exceptionFinal += "Message: ";
-                exceptionFinal += _msgCustom;
+                if (_msgCustom != "")
+                {
+                    exceptionFinal += '\n';
+                    exceptionFinal += "Message: ";
+                    exceptionFinal += _msgCustom;
+                }
 
                 return exceptionFinal;    
             }

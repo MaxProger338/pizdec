@@ -7,14 +7,14 @@
 
 namespace Users
 {
-    class Admin : virtual public User
+    class Admin : public User
     {
         protected:
 
         public:
+            Admin(std::string name, age age):
+                User(name, age) {}
     };
 };
-
-#include "Admin.cpp";
 
 #endif
