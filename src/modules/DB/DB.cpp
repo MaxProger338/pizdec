@@ -32,7 +32,7 @@ DB::
         {
             _destruct();
 
-            throw std::runtime_error("DB is invalid!");
+            throw std::runtime_error(_getErrorMsgByStatus(DB_INVALID));
         }
     }
 
@@ -56,8 +56,9 @@ std::string DB::
         {
             // case SUCCESS - должно проверяться перед вызовом функции!
             case INDEX_OUT_OF_RANGE:      return "Index out of range!";
-            case DATA_INVALID:         return "Data is invalid!";
+            case DATA_INVALID:            return "Data is invalid!";
             case ALIASES_HAVE_DUPLICATES: return "Alias have duplicates!";
+            case DB_INVALID:              return "DB invalid!";
 
             default:                      return "Unknow file error!";
         }
@@ -212,6 +213,11 @@ __responseData DB::
     {
         connect->reopen(std::ios::in);
 
+        if (!_isCorrect(connect, DB_IN_ROW_SEPARATOR, aliases))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(DB_INVALID));
+        }
+
         __amountRows amountRows = connect->getAmountRows();
 
         if (rowIndex >= amountRows)
@@ -339,122 +345,75 @@ void DB::
         connect->setRow(rowIndex, finalRow);
     }
 
-// void DB::
-//     _setByIndex(
-//         PlukiPlukiLib::PlukiPluki*& connect, 
-//         const std::map<std::string, Aliases::AliasRules*>& aliases,
-//         PlukiPlukiLib::__amountRows rowIndex, 
-//         std::vector<std::string> newData,
-//         std::string DB_BEGIN_VALUE,
-//         std::string DB_END_VALUE,
-//         std::string DB_IN_ROW_SEPARATOR
-//     ) {
-//         const std::_Ios_Openmode currentMode = connect->getMode();
+// End Set row
 
-//         connect->reopen(std::ios::in);
+// Add row
+void DB::
+    _addRow (
+        PlukiPlukiLib::PlukiPluki*& connect, 
+        const __stringVec&          row,
+        const __aliases&            aliases,
+        const std::string&          DB_IN_ROW_SEPARATOR
+    ) {
+        ERROR_STATUS addErrorStatus = _checkIsRowAdded(connect, row, aliases, DB_IN_ROW_SEPARATOR);
 
-//         __amountRows finalIndex = rowIndex + 1;
+        if (addErrorStatus != SUCCESS)
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(addErrorStatus));
+        }
+    }
 
-//         if (finalIndex >= connect->getAmountRows() - 1)
-//         {
-//             throw std::runtime_error("Incorrect index!");
-//         }
+DB::ERROR_STATUS DB::
+    _checkIsRowAdded (
+        PlukiPlukiLib::PlukiPluki*& connect, 
+        const __stringVec&          row,
+        const __aliases&            aliases,
+        const std::string&          DB_IN_ROW_SEPARATOR
+    ) noexcept
+    {
+        connect->reopen(std::ios::app);
 
-//         connect->reopen(std::ios::app);
+        __amountCols index = 0;
+        for (auto i : aliases)
+        {
+            const std::string& dataTmp = row[index++];
 
-//         std::vector<Aliases::AliasRules*> rules{ _mapToVec(aliases) };
+            if (!i.second->isValid(dataTmp))
+            {
+                return DATA_INVALID;
+            }
+        }
 
-//         connect->reopen(std::ios::in);
+        _addRowImpl(connect, row, DB_IN_ROW_SEPARATOR);
 
-//         if (!_isCorrectDBView(connect, DB_BEGIN_VALUE, DB_END_VALUE, DB_IN_ROW_SEPARATOR, rules))
-//         {
-//             throw std::runtime_error("DB is invalid!");
-//         }
+        return SUCCESS;
+    }
 
-//         connect->reopen(std::ios::app);
+void DB::
+    _addRowImpl (
+        PlukiPlukiLib::PlukiPluki*& connect, 
+        const __stringVec&          row,
+        const std::string&          DB_IN_ROW_SEPARATOR
+    ) noexcept
+    {
+        std::string finalRow;
 
-//         if (!_isCorrectRowByAliases(newData, rules))
-//         {
-//             throw std::runtime_error("Data is invalid (by aliases)");
-//         }
+        int index = 0;
+        for (auto i : row)
+        {
+            finalRow += i;
 
-//         std::string finalData;
+            if (index++ < row.size() - 1)
+            {
+                finalRow += DB_IN_ROW_SEPARATOR;
+            }
+        }
 
-//         int index = 0;
-//         for (auto i : newData)
-//         {
-//             finalData += i;
+        // TODO: Исправь это (создай новый метод в библиотеке)
+        *connect->getFile() << finalRow << '\n';
+    }
 
-//             if (index++ < newData.size() - 1)
-//             {
-//                 finalData += DB_IN_ROW_SEPARATOR;
-//             }
-//         }
-
-//         connect->setRowByIndex(finalIndex, finalData);
-
-//         connect->reopen(currentMode);
-//     }
-
-// void DB::
-//     _add(
-//         PlukiPlukiLib::PlukiPluki*& connect, 
-//         const std::map<std::string, Aliases::AliasRules*>& aliases,
-//         std::vector<std::string> data,
-//         std::string DB_BEGIN_VALUE,
-//         std::string DB_END_VALUE,
-//         std::string DB_IN_ROW_SEPARATOR
-//     ) {
-//         const std::_Ios_Openmode currentMode = connect->getMode();
-
-//         std::vector<Aliases::AliasRules*> rules{ _mapToVec(aliases) };
-
-//         connect->reopen(std::ios::in);
-
-//         int finalIndex = connect->getAmountRows() - 1;
-
-//         if (!_isCorrectDBView(connect, DB_BEGIN_VALUE, DB_END_VALUE, DB_IN_ROW_SEPARATOR, rules))
-//         {
-//             throw std::runtime_error("DB is invalid!");
-//         }
-
-//         connect->reopen(std::ios::app);
-
-//         if (!_isCorrectRowByAliases(data, rules))
-//         {
-//             throw std::runtime_error("Data is invalid (by aliases)");
-//         }
-
-//         std::string finalData;
-
-//         int index = 0;
-//         for (auto i : data)
-//         {
-//             finalData += i;
-
-//             if (index++ < data.size() - 1)
-//             {
-//                 finalData += DB_IN_ROW_SEPARATOR;
-//             }
-//         }
-
-//         connect->insertToFile(finalIndex, finalData);
-
-//         connect->reopen(currentMode);
-//     }
-
-// std::vector<Aliases::AliasRules*> DB::
-//     _mapToVec(const std::map<std::string, Aliases::AliasRules*>& map) const
-//     {
-//         std::vector<Aliases::AliasRules*> aliases;
-
-//         for (auto i : map)
-//         {
-//             aliases.push_back(i.second);
-//         }
-
-//         return aliases;
-//     }
+// End Row add
 
 // String Tools
 __stringVec DB::
@@ -495,23 +454,11 @@ bool DB::
         return _isCorrect(_connect, _DB_IN_ROW_SEPARATOR, _aliases);
     }
 
-// std::string DB::
-//     getDbBeginValue() const
-//     {
-//         return _DB_BEGIN_VALUE;
-//     }
-
-// std::string DB::
-//     getDbEndValue() const
-//     {
-//         return _DB_END_VALUE;
-//     }
-
-// std::string DB::
-//     getDbRowsSeparator() const
-//     {
-//         return _DB_IN_ROW_SEPARATOR;
-//     }
+std::string DB::
+    getRowsSeparator() const
+    {
+        return _DB_IN_ROW_SEPARATOR;
+    }
 
 __responseData DB::
     getRow(__amountRows index) const
@@ -527,11 +474,11 @@ void DB::
         _setRow(_connect, index, newRow, _aliases, _DB_IN_ROW_SEPARATOR);
     }
 
-// void DB::
-//     add(std::vector<std::string> data)
-//     {
-//         _add(_connect, _cols, data, _DB_BEGIN_VALUE, _DB_END_VALUE, _DB_IN_ROW_SEPARATOR);
-//     }
+void DB::
+    addRow(const __stringVec& row)
+    {
+        _addRow(_connect, row, _aliases, _DB_IN_ROW_SEPARATOR);
+    }
 
 __responseData DB::
     operator[](PlukiPlukiLib::__amountRows index) const
@@ -545,4 +492,10 @@ void DB::
         const __stringVec&          newRow
     ) {
         setRow(index, newRow);
+    }
+
+void DB::
+    operator()(const __stringVec& row)
+    {
+        addRow(row);
     }

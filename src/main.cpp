@@ -80,6 +80,8 @@ int main(int argc, char** argv)
             cols
         );
 
+        db(std::vector<std::string>{"lol", "KEK", "CHEBUREK"});
+
         // Getting data from db
         std::vector <std::map<std::string, std::string> > datas { 
             db[0],

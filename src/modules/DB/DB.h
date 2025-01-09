@@ -29,6 +29,7 @@ namespace DBs
                 INDEX_OUT_OF_RANGE,
                 DATA_INVALID,
                 ALIASES_HAVE_DUPLICATES,
+                DB_INVALID,
             };
 
             std::string _getErrorMsgByStatus (
@@ -129,63 +130,65 @@ namespace DBs
                                                         PlukiPlukiLib::__amountRows rowIndex, 
                                                         const __stringVec&          newRow,
                                                         const std::string&          DB_IN_ROW_SEPARATOR
-                                                        ) noexcept;                
+                                                       ) noexcept;                
 
-            // void _setByIndex(
-            //     PlukiPlukiLib::PlukiPluki*& connect, 
-            //     const std::map<std::string, Aliases::AliasRules*>& aliases,
-            //     PlukiPlukiLib::__amountRows rowIndex, 
-            //     std::vector<std::string> newData,
-            //     std::string DB_BEGIN_VALUE,
-            //     std::string DB_END_VALUE,
-            //     std::string DB_IN_ROW_SEPARATOR
-            // );
+            // Add row
+            void            _addRow                    (
+                                                        PlukiPlukiLib::PlukiPluki*& connect, 
+                                                        const __stringVec&          row,
+                                                        const __aliases&            aliases,
+                                                        const std::string&          DB_IN_ROW_SEPARATOR
+                                                       );
 
-            // void _add(
-            //     PlukiPlukiLib::PlukiPluki*& connect, 
-            //     const std::map<std::string, Aliases::AliasRules*>& aliases,
-            //     std::vector<std::string> data,
-            //     std::string DB_BEGIN_VALUE,
-            //     std::string DB_END_VALUE,
-            //     std::string DB_IN_ROW_SEPARATOR
-            // );
+            ERROR_STATUS    _checkIsRowAdded           (
+                                                        PlukiPlukiLib::PlukiPluki*& connect, 
+                                                        const __stringVec&          row,
+                                                        const __aliases&            aliases,
+                                                        const std::string&          DB_IN_ROW_SEPARATOR
+                                                       ) noexcept;
+
+            void            _addRowImpl                (
+                                                        PlukiPlukiLib::PlukiPluki*& connect, 
+                                                        const __stringVec&          row,
+                                                        const std::string&          DB_IN_ROW_SEPARATOR
+                                                       ) noexcept;
 
         public:
-            DB                    (
-                                    std::string      path, 
-                                    std::string      DB_IN_ROW_SEPARATOR,
-                                    const __aliases& aliases
-                                  );
+            DB                              (
+                                                std::string      path, 
+                                                std::string      DB_IN_ROW_SEPARATOR,
+                                                const __aliases& aliases
+                                            );
 
-            ~DB                   ();
+            ~DB                             ();
 
-            // std::string getDbBeginValue()    const;
+            std::string    getRowsSeparator () 
+                                                const;
 
-            // std::string getDbEndValue()      const;
+            bool isCorrect                  ()
+                                                const;
 
-            // std::string getDbRowsSeparator() const;
+            __responseData getRow           (PlukiPlukiLib::__amountRows index) 
+                                                const;
 
-            bool isCorrect        ()
-                                    const;
+            void           setRow           (
+                                                PlukiPlukiLib::__amountRows index, 
+                                                const __stringVec&          newRow
+                                            );
 
-            __responseData getRow (PlukiPlukiLib::__amountRows index) 
-                                    const;
-
-            void           setRow (
-                                    PlukiPlukiLib::__amountRows index, 
-                                    const __stringVec&          newRow
-                                  );
-
-            // void                               add(std::vector<std::string> data);
+            void           addRow           (const __stringVec& data);
 
             // Call getRow
-            __responseData operator[] (PlukiPlukiLib::__amountRows index) 
-                                        const;
+            __responseData operator[]       (PlukiPlukiLib::__amountRows index) 
+                                                const;
 
             // Call setRow
-            void           operator() (
-                                        PlukiPlukiLib::__amountRows index, 
-                                        const __stringVec&          newRow
-                                      );
+            void           operator()       (
+                                                PlukiPlukiLib::__amountRows index, 
+                                                const __stringVec&          newRow
+                                            );
+            
+            // Call addRow
+            void           operator()       (const __stringVec& row);
     };
 };
