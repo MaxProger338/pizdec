@@ -8,7 +8,6 @@ namespace Users
 
     class User
     {
-
         protected:
             std::string _name;
             age _age;
@@ -40,5 +39,7 @@ namespace Users
             {
                 return _age;
             }
+
+            std::string uuid;
     };
 };

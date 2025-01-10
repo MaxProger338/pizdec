@@ -73,12 +73,12 @@ bool DB::
 
         for (auto i : aliases)
         {
-            if (std::find(begin(names), end(names), i.first) != end(names))
+            if (std::find(begin(names), end(names), i.name) != end(names))
             {
                 return true;
             }
 
-            names.push_back(i.first);            
+            names.push_back(i.name);            
         }
 
         return false;
@@ -191,7 +191,7 @@ bool DB::
         {
             std::string val = splitRow[index++];
 
-            if (!i.second->isValid(val))
+            if (!i.alias->isValid(val))
             {
                 return false;
             }
@@ -201,6 +201,34 @@ bool DB::
     }
 
 // End Is correct
+
+// Get amount rows
+__amountRowsInDB DB::
+    _getAmountRows (
+        PlukiPlukiLib::PlukiPluki*& connect, 
+        const __aliases&            aliases,
+        const std::string&          DB_IN_ROW_SEPARATOR
+    ) const 
+    {
+        connect->reopen(std::ios::in);
+
+        if (_isCorrect(connect, DB_IN_ROW_SEPARATOR, aliases))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(DB_INVALID));
+        }
+
+        return _getAmountRowsImpl(connect);
+    }
+
+__amountRowsInDB DB::
+    _getAmountRowsImpl (
+        PlukiPlukiLib::PlukiPluki*& connect
+    ) const noexcept
+    {
+        return connect->getAmountRows();
+    }
+
+// End Get amount rows
 
 // Get row
 __responseData DB::
@@ -240,12 +268,12 @@ __responseData DB::
         {
             const std::string& dataTmp = data[index++];
 
-            if (!i.second->isValid(dataTmp))
+            if (!i.alias->isValid(dataTmp))
             {
                 throw std::runtime_error(_getErrorMsgByStatus(DATA_INVALID));
             }
 
-            response[i.first] = dataTmp; 
+            response[i.name] = dataTmp; 
         }
 
         return response;
@@ -310,7 +338,7 @@ DB::ERROR_STATUS DB::
         {
             const std::string& dataTmp = newRow[index++];
 
-            if (!i.second->isValid(dataTmp))
+            if (!i.alias->isValid(dataTmp))
             {
                 return DATA_INVALID;
             }
@@ -378,7 +406,7 @@ DB::ERROR_STATUS DB::
         {
             const std::string& dataTmp = row[index++];
 
-            if (!i.second->isValid(dataTmp))
+            if (!i.alias->isValid(dataTmp))
             {
                 return DATA_INVALID;
             }
@@ -460,6 +488,12 @@ std::string DB::
         return _DB_IN_ROW_SEPARATOR;
     }
 
+__amountRowsInDB DB::
+    getAmountRows() const
+    {
+        return _getAmountRows(_connect, _aliases, _DB_IN_ROW_SEPARATOR);
+    }
+
 __responseData DB::
     getRow(__amountRows index) const
     {
@@ -478,6 +512,12 @@ void DB::
     addRow(const __stringVec& row)
     {
         _addRow(_connect, row, _aliases, _DB_IN_ROW_SEPARATOR);
+    }
+
+__amountRowsInDB DB::
+    operator()() const
+    {
+        return getAmountRows();
     }
 
 __responseData DB::

@@ -1,58 +1,114 @@
 #include "UserDB.h"
 
 using namespace DBs;
-using namespace PlukiPlukiLib;
 
 UserDB::
-    UserDB(std::string path):
-        _connect{ new PlukiPluki(path, std::ios::in) } {}
+    UserDB()
+        // _db { CONFIG_DATA_PATH, CONFIG_DB_IN_ROW_SEPARATOR, _cols },
+
+        // _cols {
+        //     {"login",    new Aliases::StringAliasRules(_validSymbolsWithoutOrderSymbols)}, 
+        //     {"password", new Aliases::StringAliasRules(_uppercaseEnglishAlphabetAndNumbers)},
+        //     {"uuid",     new Aliases::StringAliasRules(_uppercaseEnglishAlphabetAndNumbers)},
+        //     {"is_admin", new Aliases::ChooseAliasRules(std::vector<std::string>{"yes", "no"})}
+        // }
+    {
+        // std::cout << _cols.size();
+        // _db{ CONFIG_DATA_PATH, CONFIG_DB_IN_ROW_SEPARATOR, _cols };
+    }
 
 UserDB::
     ~UserDB()
     {
-        delete _connect;
-        _connect = nullptr;
+        // for (auto i : _cols)
+        // {
+        //     delete i.second;
+        // }
     }
 
-std::vector<std::string> UserDB::
-    _parseDB() const
+std::vector<char> UserDB::
+    _concat(
+        const std::vector<char>& vec1, 
+        const std::vector<char>& vec2
+    ) const
     {
-        std::vector<std::string> parseUsers{ _connect->indexAllFile() };
+        unsigned int size = vec1.size() + vec2.size();
 
-        
+        std::vector<char> res(size);
+
+        for (size_t i = 0; i < vec1.size() + vec2.size(); i++)
+        {
+            if (i < vec1.size())
+            {
+                res[i] = vec1[i];
+            }
+            else
+            {
+                res[i] = vec2[i - vec1.size()];
+            }
+        }    
+
+        return res;
     }
 
-bool UserDB::
-    _isCorrectDBView() const
-    {
-        if (_connect->getMode() != std::ios::in)
-        {
-            _connect->reopen(std::ios::in);
-        }
+// // Auth
 
-        __amountRows amountUsers = _connect->getAmountRows();
-        if (amountUsers < 2)
-        {
-            return false;
-        }
+// Users::User* UserDB::
+//     _auth (
+//         const DB&   db,
+//         std::string login, 
+//         std::string password
+//     ) const
+//     {
+//         return _authImpl(db, login, password);
+//     }
 
-        if ((*_connect)[0] != DB_BEGIN)
-        {
-            return false;
-        }
+// Users::User* UserDB::
+//     _authImpl(
+//         const DB&   db,
+//         std::string login, 
+//         std::string password
+//     ) const noexcept
+//     {
+//         __amountRowsInDB amountRows = db.getAmountRows();
 
-        if ((*_connect)[amountUsers - 1] != DB_END)
-        {
-            return false;
-        }
+//         __amountRowsInDB foundUserIndex = 0;
+//         for (size_t i = 0; i < amountRows; i++)
+//         {
+//             __responseData data = db.getRow(i);
 
-        return true;
-    }
+//             if (data["login"] == login && data["password"] == password)
+//             {
+//                 foundUserIndex = i;
+//                 break;
+//             }
+//         }
 
-bool UserDB::
-    reg(std::string login, std::string password, const Users::User& user) const
-    {
-        std::cout << _isCorrectDBView() << '\n';
+//         __responseData foundUser = db.getRow(foundUserIndex);
 
-        return true;
-    }
+//         if (foundUser["is_admin"] == "yes")
+//         {
+//             Users::Admin* admin = new Users::Admin("name", 28);
+//             admin->uuid = foundUser["uuid"];
+
+//             return admin;
+//         }
+//         else
+//         {
+//             Users::Testable* testable = new Users::Testable("name", 28);
+//             testable->uuid = foundUser["uuid"];
+
+//             return testable;
+//         }
+//     }
+
+// // End Auth
+
+// Users::User* UserDB::
+//     auth (
+//         std::string login, 
+//         std::string password
+//     ) const
+//     {
+//         return _auth(_db, login, password);
+//     }
