@@ -212,7 +212,7 @@ __amountRowsInDB DB::
     {
         connect->reopen(std::ios::in);
 
-        if (_isCorrect(connect, DB_IN_ROW_SEPARATOR, aliases))
+        if (!_isCorrect(connect, DB_IN_ROW_SEPARATOR, aliases))
         {
             throw std::runtime_error(_getErrorMsgByStatus(DB_INVALID));
         }
@@ -449,7 +449,7 @@ __stringVec DB::
     {
         __stringVec splitStr;
 
-        // TODO: заменить этот алгоритм на какой-нибудь другой
+        //TODO: заменить этот алгоритм на какой-нибудь другой
         if (str.find(sep) != std::string::npos)
         {
             std::regex del(sep);

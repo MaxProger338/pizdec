@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 namespace Users
 {
     typedef unsigned short age;
@@ -10,36 +8,17 @@ namespace Users
     {
         protected:
             std::string _name;
-            age _age;
+            std::string _address;
+            std::string _phone;
 
         public:
-            User(std::string name, age age):
-                _name{ name }, _age{ age } {}
+            User(std::string name, std::string address, std::string phone):
+                _name{ name }, _address{ address }, _phone{ phone } {}
 
-            User& setName(const std::string& newName)
-            {
-                _name = newName;
+            virtual std::string getName() const = 0;
 
-                return *this;
-            }
+            virtual std::string getAddress() const = 0;
 
-            std::string getName() const
-            {
-                return _name;
-            }
-
-            User& setAge(age newAge)
-            {
-                _age = newAge;
-
-                return *this;
-            }
-
-            age getAge() const
-            {
-                return _age;
-            }
-
-            std::string uuid;
+            virtual std::string getPhone() const = 0;
     };
 };
