@@ -224,6 +224,11 @@ Users::Admin* WrapperDB::
     ) {
         AccountsDB accountsDB;
         
+        if (!accountsDB.isValidData(login, password, accountData))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(ACCOUNTS_DATA_INVALID));
+        }
+
         if (accountsDB.isExists(login, password))
         {
             throw std::runtime_error(_getErrorMsgByStatus(ACCOUNT_ALREADY_EXISTS));
@@ -232,6 +237,11 @@ Users::Admin* WrapperDB::
         AdminsDataDB adminDataDB;
 
         std::string uuid = accountData.uuid;
+
+        if (!adminDataDB.isValidData(uuid, adminData))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(USERS_DATA_INVALID));
+        }
 
         if (adminDataDB.isExists(uuid))
         {
