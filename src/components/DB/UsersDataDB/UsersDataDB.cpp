@@ -20,7 +20,7 @@ UsersDataDB::
             DBs::AliasAndHisName(
                 "address",
                 new Aliases::StringAliasRules (
-                    Data::SymbolsArrays::validSymbolsWithoutOrderSymbolsandSpace
+                    Data::SymbolsArrays::validSymbolsWithoutOrderSymbols
                 )
             ),
             DBs::AliasAndHisName(

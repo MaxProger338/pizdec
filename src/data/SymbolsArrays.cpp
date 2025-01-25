@@ -31,14 +31,14 @@ std::vector<char> SymbolsArrays::englishAlphabetLowercase
     'a','b','c','d','e','f','g','h',
     'i','j','k','l','m','n','o','p',
     'q','r','s','t','u','v','w','x',
-    'y','z'
+    'y','z',
 };
 
 std::vector<char> SymbolsArrays::englishAlphabetUppercase 
 {
     'A','B','C','D','E','F','G','H','I',
     'J','K','L','M','N','O','P','Q','R',
-    'S','T','U','V','W','X','Y','Z'
+    'S','T','U','V','W','X','Y','Z',
 };
 
 std::vector<char> SymbolsArrays::numbers 
@@ -49,7 +49,7 @@ std::vector<char> SymbolsArrays::numbers
 std::vector<char> SymbolsArrays::orderSymbols 
 {
     '!','@','#','$','%','^','&',
-    '*','(',')','?'
+    '*','(',')','?',
 };
 
 std::vector<char> SymbolsArrays::englishAlphabet 
@@ -79,10 +79,10 @@ std::vector<char> SymbolsArrays::validSymbolsWithOrderSymbols
 
 std::vector<char> SymbolsArrays::englishAlphabetAndSpace 
 {
-    _concat(englishAlphabet, std::vector<char>{'`'})
+    _concat(englishAlphabet, std::vector<char>{' '})
 };
 
-std::vector<char> SymbolsArrays::validSymbolsWithoutOrderSymbolsandSpace 
+std::vector<char> SymbolsArrays::validSymbolsWithoutOrderSymbolsAndSpace 
 {
-    _concat(validSymbolsWithoutOrderSymbols, std::vector<char>{'`'})
+    _concat(validSymbolsWithoutOrderSymbols, std::vector<char>{' '})
 };

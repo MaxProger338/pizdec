@@ -33,6 +33,6 @@ namespace Data
 
             static std::vector<char> englishAlphabetAndSpace;
 
-            static std::vector<char> validSymbolsWithoutOrderSymbolsandSpace;
+            static std::vector<char> validSymbolsWithoutOrderSymbolsAndSpace;
     };
 };

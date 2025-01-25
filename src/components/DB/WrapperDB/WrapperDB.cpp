@@ -185,7 +185,7 @@ Users::Testable* WrapperDB::
         const UsersDataDBData&  userData
     ) {
         AccountsDB accountsDB;
-        
+
         if (accountsDB.isExists(login, password))
         {
             throw std::runtime_error(_getErrorMsgByStatus(ACCOUNT_ALREADY_EXISTS));

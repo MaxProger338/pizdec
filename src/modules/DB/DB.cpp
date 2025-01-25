@@ -449,27 +449,34 @@ __stringVec DB::
     {
         __stringVec splitStr;
 
-        //TODO: заменить этот алгоритм на какой-нибудь другой
-        if (str.find(sep) != std::string::npos)
+        std::istringstream stream(str);
+        std::string token;
+
+        while (std::getline(stream, token, '~')) 
         {
-            std::regex del(sep);
-
-            // Create a regex_token_iterator to split the string
-            std::sregex_token_iterator it(str.begin(), str.end(), del, -1);
-
-            // End iterator for the regex_token_iterator
-            std::sregex_token_iterator end;
-
-            // Iterating through each token
-            while (it != end) 
-            {
-                if (*it != "")
-                {
-                    splitStr.push_back(*it);
-                }
-                ++it;
-            }
+            splitStr.push_back(token);
         }
+        // //TODO: заменить этот алгоритм на какой-нибудь другой
+        // if (str.find(sep) != std::string::npos)
+        // {
+        //     std::regex del(sep);
+
+        //     // Create a regex_token_iterator to split the string
+        //     std::sregex_token_iterator it(str.begin(), str.end(), del, -1);
+
+        //     // End iterator for the regex_token_iterator
+        //     std::sregex_token_iterator end;
+
+        //     // Iterating through each token
+        //     while (it != end) 
+        //     {
+        //         if (*it != "")
+        //         {
+        //             splitStr.push_back(*it);
+        //         }
+        //         ++it;
+        //     }
+        // }
 
         return splitStr;
     }

@@ -6,7 +6,20 @@ int main(int argc, char** argv)
 {
     try
     {
-        setlocale(LC_ALL, "");
+        // std::vector<std::string> splitStr;
+
+        // std::istringstream stream("gfrgreg~rgerger rgerg~gf");
+        // std::string token;
+
+        // while (std::getline(stream, token, '~')) 
+        // {
+        //     splitStr.push_back(token);
+        // }
+
+        // for (auto i : splitStr)
+        // {
+        //     std::cout << i << '\n';
+        // }
 
         Model::Model::process();
     } 

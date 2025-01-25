@@ -6,90 +6,51 @@
 #include "../../modules/Crypto/MD5/MD5.h"
 
 #include <iostream>
+#include <string>
 
 namespace Model
 {
     class Model
     {
         private:
-            static void print(const wchar_t* str)
-            {
-                std::wcout << str;
-            }
-
-            static void printGreen(const wchar_t* str)
-            {
-                std::wcout << "\033[32;1m" << str << "\033[0m";
-            }
-
-            static void printRed(const wchar_t* str)
-            {
-                std::wcout << "\033[31;1m" << str << "\033[0m";
-            }
-
-            static void printPurple(const wchar_t* str)
-            {
-                std::wcout << "\u001b[35;1m" << str << "\033[0m";
-            }
-
-            static void printBlack(const wchar_t* str)
-            {
-                std::wcout << "\u001b[30m;1m" << str << "\033[0m";
-            }
-
-            static void printYellow(const wchar_t* str)
-            {
-                std::wcout << "\u001b[33;1m" << str << "\033[0m";
-            }
-
-            static void printBlue(const wchar_t* str)
-            {
-                std::wcout << "\u001b[36;1m" << str << "\033[0m";
-            }
-
-            static void printRedBlue(const wchar_t* str)
-            {
-                std::wcout << "\u001b[34;1m" << str << "\033[0m";
-            }
-
             static void print(const char* str)
             {
-                std::wcout << str;
+                std::cout << str;
             }
 
             static void printGreen(const char* str)
             {
-                std::wcout << "\033[32;1m" << str << "\033[0m";
+                std::cout << "\033[32;1m" << str << "\033[0m";
             }
 
             static void printRed(const char* str)
             {
-                std::wcout << "\033[31;1m" << str << "\033[0m";
+                std::cout << "\033[31;1m" << str << "\033[0m";
             }
 
             static void printPurple(const char* str)
             {
-                std::wcout << "\u001b[35;1m" << str << "\033[0m";
+                std::cout << "\u001b[35;1m" << str << "\033[0m";
             }
 
             static void printBlack(const char* str)
             {
-                std::wcout << "\u001b[30m;1m" << str << "\033[0m";
+                std::cout << "\u001b[30m;1m" << str << "\033[0m";
             }
 
             static void printYellow(const char* str)
             {
-                std::wcout << "\u001b[33;1m" << str << "\033[0m";
+                std::cout << "\u001b[33;1m" << str << "\033[0m";
             }
 
             static void printBlue(const char* str)
             {
-                std::wcout << "\u001b[36;1m" << str << "\033[0m";
+                std::cout << "\u001b[36;1m" << str << "\033[0m";
             }
 
             static void printRedBlue(const char* str)
             {
-                std::wcout << "\u001b[34;1m" << str << "\033[0m";
+                std::cout << "\u001b[34;1m" << str << "\033[0m";
             }
 
             static void print(const std::string str)
@@ -156,32 +117,32 @@ namespace Model
                     std::string password;
                     std::string passwordHash;
 
-                    print(L"\n");
-                    print(L"Введите логин: ");
+                    print("\n");
+                    print("Enter login: ");
                     std::cin >> login;
 
-                    print(L"\n");
-                    print(L"Введите пароль: ");
+                    print("\n");
+                    print("Enter password: ");
                     std::cin >> password;
 
                     passwordHash = Crypto::MD5::hash(password);
 
-                    print(L"\n");
+                    print("\n");
 
                     try
                     {
                         Users::User* user = DBs::WrapperDB::auth(login, passwordHash);
 
-                        printPurple(L"С возвращением, ");
+                        printPurple("You are Welcome, ");
                         printPurple(user->getName());
-                        printPurple(L"!\n\n");
+                        printPurple("!\n\n");
 
                         return user;
                     }
                     catch(const std::exception& e)
                     {
                         printRed(e.what());
-                        print(L"\n");
+                        print("\n");
                     }
                 }
             }
@@ -197,188 +158,218 @@ namespace Model
                     std::string address;
                     std::string phone;
 
-                    char isAdmin = 'n';
+                    char isAdmin    = 'n';
                     bool isContinue = false;
 
-                    print(L"\n");
-                    printBlue(L"Вы регистрируетесь как Админ? (y/n) ");
-                    std::cin >> isAdmin;
-
-                    if (isAdmin == 'y' || isAdmin == 'n')
+                    if (isContinue == false)
                     {
-                        isContinue = true;
-                    }
-
-                    if (isContinue)
+                        while (true)
                     {
-                        if (isAdmin == 'y')
+                        print("\n");
+                        printBlue("Your regist as Admin? (y/n) ");
+                        std::cin >> isAdmin;
+
+                        if (isAdmin == 'y' || isAdmin == 'n')
                         {
-                            std::string adminKey;
-
-                            print(L"\n");
-                            printBlue(L"Введите секретный ключ: ");
-                            std::cin >> adminKey;
-
-                            if (adminKey != ADMIN_KEY)
+                            if (isAdmin == 'y')
                             {
-                                isContinue = false;
+                                std::string adminKey;
 
-                                print(L"\n");
-                                printRed(L"Ключи не совпадают\n");
+                                print("\n");
+                                printBlue("Enter secret key: ");
+                                std::cin >> adminKey;
+
+                                if (adminKey != ADMIN_KEY)
+                                {
+                                    print("\n");
+                                    printRed("Keys are not valid\n");
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                             else
                             {
-                                // isAdmin = 'n';
+                                break;
                             }
                         }
                     }
+                    }
 
-                    if (isContinue)
+                    isContinue =  true;
+
+                    print("\n");
+                    print("Enter login: ");
+                    std::cin >> login;
+
+                    print("\n");
+                    print("Enter password: ");
+                    std::cin >> password;
+
+                    print("\n");
+                    print("Enter your name: ");
+                    std::cin >> name;
+
+                    print("\n");
+                    print("Enter your home address: ");
+                    std::cin >> address;
+
+                    print("\n");
+                    print("Enter your phone: ");
+                    std::cin >> phone;
+
+                    // ------ Данные получены, теперь создаём пользоватедя ------
+
+                    passwordHash = Crypto::MD5::hash(password);
+
+                    print("\n");
+
+                    DBs::AccountsDBData accountData;
+
+                    // Hash uuid
+                    time_t myTime        = time(NULL);
+
+                    accountData.uuid     = Crypto::MD5::hash(std::to_string(myTime));
+
+                    printRed(login);
+                    printRed("\n");
+                    printRed(password);
+                    printRed("\n");
+                    printRed(name);
+                    printRed("\n");
+                    printRed(address);
+                    printRed("\n");
+                    printRed(phone);
+                    printRed("\n");
+                    printRed(passwordHash);
+                    printRed("\n");
+                    printRed(accountData.uuid);
+                    printRed("\n");
+                    printRed(isAdmin == 'y' ? "yes" : "no");
+                    printRed("\n");
+
+                    // ------ Сама регистрация ------
+
+                    if (isAdmin == 'y')
                     {
-                        print(L"\n");
-                        print(L"Введите логин: ");
-                        std::cin >> login;
+                        printRed("Regist as Admin!\n");
 
-                        print(L"\n");
-                        print(L"Введите пароль: ");
-                        std::cin >> password;
+                        accountData.is_admin = "yes";
 
-                        print(L"\n");
-                        print(L"Введите ваше имя: ");
-                        std::cin >> name;
+                        DBs::AdminsDataDBData adminsDataDBData;
 
-                        print(L"\n");
-                        print(L"Введите ваш домашний адрес: ");
-                        std::cin >> address;
+                        adminsDataDBData.name    = name;
+                        adminsDataDBData.address = address;
+                        adminsDataDBData.phone   = phone;
 
-                        print(L"\n");
-                        print(L"Введите ваш номер телефона: ");
-                        std::cin >> phone;
-
-                        passwordHash = Crypto::MD5::hash(password);
-
-                        print(L"\n");
-
-                        // ============== Сама регистрация ==============
-                        DBs::AccountsDBData accountData;
-
-                        // Hash uuid
-                        time_t myTime        = time(NULL);
-
-                        accountData.uuid     = Crypto::MD5::hash(std::to_string(myTime));
-
-                        if (isAdmin == 'y')
+                        try
                         {
-                            try
-                            {
-                                accountData.is_admin = "yes";
+                            Users::Admin* admin = DBs::WrapperDB::regAdmin(
+                                login, 
+                                passwordHash,
+                                accountData,
+                                adminsDataDBData
+                            );
 
-                                DBs::AdminsDataDBData adminsDataDBData;
+                            printPurple("Welcome, ");
+                            printPurple(admin->getName());
+                            printPurple("!\n\n");
 
-                                adminsDataDBData.name    = name;
-                                adminsDataDBData.address = address;
-                                adminsDataDBData.phone   = phone;
-
-                                Users::Admin* admin = DBs::WrapperDB::regAdmin(
-                                    login, 
-                                    passwordHash,
-                                    accountData,
-                                    adminsDataDBData
-                                );
-
-                                printPurple(L"Добро пожаловать, ");
-                                printPurple(admin->getName());
-                                printPurple(L"!\n\n");
-
-                                return admin;
-                            }
-                            catch(const std::exception& e)
-                            {
-                                printRed(e.what());
-                                print(L"\n");
-                            }
+                            return admin;
                         }
-                        else if (isAdmin == 'n')
+                        catch(const std::exception& e)
                         {
-                            try
-                            {
-                                accountData.is_admin = "no";
+                            printRed(e.what());
+                            print("\n");
+                        }
+                    }
+                    else
+                    {
+                        printRed("Regist as Testable!\n");
 
-                                DBs::UsersDataDBData userDataDBData;
+                        accountData.is_admin = "no";
 
-                                userDataDBData.name    = name;
-                                userDataDBData.address = address;
-                                userDataDBData.phone   = phone;
+                        DBs::UsersDataDBData userDataDBData;
 
-                                Users::Testable* testable = DBs::WrapperDB::regTestable(
-                                    login, 
-                                    passwordHash,
-                                    accountData,
-                                    userDataDBData
-                                );
+                        userDataDBData.name    = name;
+                        userDataDBData.address = address;
+                        userDataDBData.phone   = phone;
 
-                                printPurple(L"Приветствуем вас, ");
-                                printPurple(testable->getName());
-                                printPurple(L"!\n\n");
+                        try
+                        {
+                            Users::Testable* testable = DBs::WrapperDB::regTestable(
+                                login, 
+                                passwordHash,
+                                accountData,
+                                userDataDBData
+                            );
 
-                                return testable;
-                            }
-                            catch(const std::exception& e)
-                            {
-                                printRed(e.what());
-                                print(L"\n");
-                            }
+                            printPurple("Hello, ");
+                            printPurple(testable->getName());
+                            printPurple("!\n\n");
+
+                            return testable;
+                        }
+                        catch(const std::exception& e)
+                        {
+                            printRed(e.what());
+                            print("\n");
                         }
                     }
                 }
+
+                return nullptr;
             }
 
             static Users::User* _firstPar()
             {
-                printPurple(L"Здравствуйте!\n\n");
+                printPurple("Hello!\n\n");
 
-                printYellow(L"0 - выход (в дальнейшем)\n\n\n");
+                printYellow("0 - exit (in future)\n\n\n");
 
-                printYellow(L"==========================================\n");
+                printYellow("==========================================\n");
 
+                Users::User* user = nullptr;
                 while (true)
                 {
-                    printGreen(L"\nРегистрация - 1 / Авторизация - 2: ");
+                    printGreen("\nRegist - 1 / Auth - 2: ");
                     
                     short regOrAuth = 0;
 
                     std::cin >> regOrAuth;
 
-                    Users::User* user = nullptr;
                     switch (regOrAuth)
                     {
                         case 1:
-                            printYellow(L"------------ ");
-                            printYellow(L"Регистрация");
-                            printYellow(L" ------------\n");
+                            printYellow("------------ ");
+                            printYellow("Regist");
+                            printYellow(" ------------\n");
 
                             user = _reg();
 
                             return user;
 
                         case 2:
-                            printYellow(L"------------ ");
-                            printYellow(L"Авторизация");
-                            printYellow(L" ------------\n");
+                            printYellow("------------ ");
+                            printYellow("Auth");
+                            printYellow(" ------------\n");
 
                             user = _auth();
 
                             return user;
 
                         case 0:
-                            printPurple(L"\nДосвидания!\n\n");
+                            printPurple("\nBye!\n\n");
                             return nullptr;
                     
                         default:
-                            printRed(L"Такой пункт отсутствует\n");
+                            printRed("There number are not exists\n");
                             break;
                     }
                 }
+
+                return user;
             }
 
         public:
@@ -393,9 +384,9 @@ namespace Model
                     return;
                 }
 
-                printYellow(L"------------ ");
-                printYellow(L"Работа");
-                printYellow(L" ------------\n");
+                printYellow("------------ ");
+                printYellow("Work");
+                printYellow(" ------------\n");
 
                 printRedBlue(user->getName());
                 print("\n");
