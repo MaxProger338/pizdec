@@ -91,6 +91,12 @@ namespace DBs
                                             const AccountsDBData& usersData
                                          ) noexcept;
 
+            bool           _isValidData  (
+                                            const std::string&    login,
+                                            const std::string&    password,
+                                            const AccountsDBData& accountsData
+                                         ) const noexcept;
+
         public: 
             AccountsDB          ();
 
@@ -111,5 +117,11 @@ namespace DBs
                                     const std::string&    password,
                                     const AccountsDBData& usersData
                                 );
+
+            bool     isValidData (
+                                    const std::string&    login,
+                                    const std::string&    password,
+                                    const AccountsDBData& accountsData
+                                 ) const noexcept;
     };
 };

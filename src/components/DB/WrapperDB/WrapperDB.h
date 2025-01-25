@@ -20,6 +20,8 @@ namespace DBs
                 SUCCESS,
                 ACCOUNT_ALREADY_EXISTS,
                 USERDATA_ALREADY_EXISTS,
+                ACCOUNTS_DATA_INVALID,
+                USERS_DATA_INVALID,
             };
 
             static std::string _getErrorMsgByStatus (

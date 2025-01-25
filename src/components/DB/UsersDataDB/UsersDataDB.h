@@ -83,6 +83,11 @@ namespace DBs
                                             const UsersDataDBData& usersData
                                          ) noexcept;
 
+            bool           _isValidData  (
+                                            const std::string&     uuid,
+                                            const UsersDataDBData& usersData
+                                         ) const noexcept;
+
 
         public: 
             UsersDataDB             ();
@@ -99,5 +104,10 @@ namespace DBs
                                         const std::string&     uuid,
                                         const UsersDataDBData& usersData
                                     );
+
+            bool           isValidData (
+                                        const std::string&     uuid,
+                                        const UsersDataDBData& usersData
+                                       ) const noexcept;
     };
 };

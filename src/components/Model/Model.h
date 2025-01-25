@@ -149,6 +149,7 @@ namespace Model
 
             static Users::User* _reg()
             {
+                bool isInvalidData = false;
                 while (true)
                 {
                     std::string login;
@@ -161,40 +162,43 @@ namespace Model
                     char isAdmin    = 'n';
                     bool isContinue = false;
 
-                    if (isContinue == false)
+                    if (!isInvalidData)
                     {
-                        while (true)
-                    {
-                        print("\n");
-                        printBlue("Your regist as Admin? (y/n) ");
-                        std::cin >> isAdmin;
-
-                        if (isAdmin == 'y' || isAdmin == 'n')
+                        if (!isContinue)
                         {
-                            if (isAdmin == 'y')
+                            while (true)
                             {
-                                std::string adminKey;
-
                                 print("\n");
-                                printBlue("Enter secret key: ");
-                                std::cin >> adminKey;
+                                printBlue("Your regist as Admin? (y/n) ");
+                                std::cin >> isAdmin;
 
-                                if (adminKey != ADMIN_KEY)
+                                if (isAdmin == 'y' || isAdmin == 'n')
                                 {
-                                    print("\n");
-                                    printRed("Keys are not valid\n");
+                                    if (isAdmin == 'y')
+                                    {
+                                        std::string adminKey;
+
+                                        print("\n");
+                                        printBlue("Enter secret key: ");
+                                        std::cin >> adminKey;
+
+                                        if (adminKey != ADMIN_KEY)
+                                        {
+                                            print("\n");
+                                            printRed("Keys are not valid\n");
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                break;
                             }
                         }
-                    }
                     }
 
                     isContinue =  true;
@@ -232,29 +236,10 @@ namespace Model
 
                     accountData.uuid     = Crypto::MD5::hash(std::to_string(myTime));
 
-                    printRed(login);
-                    printRed("\n");
-                    printRed(password);
-                    printRed("\n");
-                    printRed(name);
-                    printRed("\n");
-                    printRed(address);
-                    printRed("\n");
-                    printRed(phone);
-                    printRed("\n");
-                    printRed(passwordHash);
-                    printRed("\n");
-                    printRed(accountData.uuid);
-                    printRed("\n");
-                    printRed(isAdmin == 'y' ? "yes" : "no");
-                    printRed("\n");
-
                     // ------ Сама регистрация ------
 
                     if (isAdmin == 'y')
                     {
-                        printRed("Regist as Admin!\n");
-
                         accountData.is_admin = "yes";
 
                         DBs::AdminsDataDBData adminsDataDBData;
@@ -282,12 +267,12 @@ namespace Model
                         {
                             printRed(e.what());
                             print("\n");
+
+                            isInvalidData = true;
                         }
                     }
                     else
                     {
-                        printRed("Regist as Testable!\n");
-
                         accountData.is_admin = "no";
 
                         DBs::UsersDataDBData userDataDBData;
@@ -315,6 +300,8 @@ namespace Model
                         {
                             printRed(e.what());
                             print("\n");
+
+                            isInvalidData = true;
                         }
                     }
                 }
@@ -335,13 +322,13 @@ namespace Model
                 {
                     printGreen("\nRegist - 1 / Auth - 2: ");
                     
-                    short regOrAuth = 0;
+                    char regOrAuth;
 
                     std::cin >> regOrAuth;
 
                     switch (regOrAuth)
                     {
-                        case 1:
+                        case '1':
                             printYellow("------------ ");
                             printYellow("Regist");
                             printYellow(" ------------\n");
@@ -350,7 +337,7 @@ namespace Model
 
                             return user;
 
-                        case 2:
+                        case '2':
                             printYellow("------------ ");
                             printYellow("Auth");
                             printYellow(" ------------\n");
@@ -359,7 +346,7 @@ namespace Model
 
                             return user;
 
-                        case 0:
+                        case '0':
                             printPurple("\nBye!\n\n");
                             return nullptr;
                     

@@ -202,6 +202,22 @@ void UsersDataDB::
 
 // End Add
 
+bool UsersDataDB::
+    _isValidData  (
+        const std::string&     uuid,
+        const UsersDataDBData& usersData
+    ) const noexcept
+    {
+        __stringVec vec;
+
+        vec.push_back(uuid);
+        vec.push_back(usersData.name);
+        vec.push_back(usersData.address);
+        vec.push_back(usersData.phone);
+
+        return _db->isValidData(vec);
+    }
+
 UsersDataDBData UsersDataDB::
     get(std::string uuid) const
     {
@@ -220,4 +236,13 @@ void UsersDataDB::
         const UsersDataDBData& usersData
     ) {
         _add(*_db, uuid, usersData);
+    }
+
+bool UsersDataDB::
+    isValidData  (
+        const std::string&     uuid,
+        const UsersDataDBData& usersData
+    ) const noexcept
+    {
+        return _isValidData(uuid, usersData);
     }

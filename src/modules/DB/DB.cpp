@@ -84,6 +84,67 @@ bool DB::
         return false;
     }
 
+bool DB::
+    _isValidData(
+        const __stringVec& row,
+        const __aliases&   aliases
+    ) const noexcept
+    {
+        __amountCols index = 0;
+        for (auto i : aliases)
+        {
+            const std::string& dataTmp = row[index++];
+
+            if (!i.alias->isValid(dataTmp))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+// String Tools
+__stringVec DB::
+    _split(const std::string& str, const std::string& sep) const noexcept
+    {
+        __stringVec splitStr;
+
+        std::istringstream stream(str);
+        std::string token;
+
+        while (std::getline(stream, token, '~')) 
+        {
+            splitStr.push_back(token);
+        }
+        // //TODO: заменить этот алгоритм на какой-нибудь другой
+        // if (str.find(sep) != std::string::npos)
+        // {
+        //     std::regex del(sep);
+
+        //     // Create a regex_token_iterator to split the string
+        //     std::sregex_token_iterator it(str.begin(), str.end(), del, -1);
+
+        //     // End iterator for the regex_token_iterator
+        //     std::sregex_token_iterator end;
+
+        //     // Iterating through each token
+        //     while (it != end) 
+        //     {
+        //         if (*it != "")
+        //         {
+        //             splitStr.push_back(*it);
+        //         }
+        //         ++it;
+        //     }
+        // }
+
+        return splitStr;
+    }
+
+// End String Tools
+
+
 // Is correct
 bool DB::_isCorrect (
         PlukiPlukiLib::PlukiPluki*& connect, 
@@ -443,46 +504,6 @@ void DB::
 
 // End Row add
 
-// String Tools
-__stringVec DB::
-    _split(const std::string& str, const std::string& sep) const
-    {
-        __stringVec splitStr;
-
-        std::istringstream stream(str);
-        std::string token;
-
-        while (std::getline(stream, token, '~')) 
-        {
-            splitStr.push_back(token);
-        }
-        // //TODO: заменить этот алгоритм на какой-нибудь другой
-        // if (str.find(sep) != std::string::npos)
-        // {
-        //     std::regex del(sep);
-
-        //     // Create a regex_token_iterator to split the string
-        //     std::sregex_token_iterator it(str.begin(), str.end(), del, -1);
-
-        //     // End iterator for the regex_token_iterator
-        //     std::sregex_token_iterator end;
-
-        //     // Iterating through each token
-        //     while (it != end) 
-        //     {
-        //         if (*it != "")
-        //         {
-        //             splitStr.push_back(*it);
-        //         }
-        //         ++it;
-        //     }
-        // }
-
-        return splitStr;
-    }
-
-// End String Tools
-
 bool DB::
     isCorrect() const
     {
@@ -519,6 +540,12 @@ void DB::
     addRow(const __stringVec& row)
     {
         _addRow(_connect, row, _aliases, _DB_IN_ROW_SEPARATOR);
+    }
+
+bool DB::
+    isValidData(const __stringVec& row) const noexcept
+    {
+        return _isValidData(row, _aliases);
     }
 
 __amountRowsInDB DB::

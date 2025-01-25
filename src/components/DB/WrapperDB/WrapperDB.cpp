@@ -10,6 +10,8 @@ std::string WrapperDB::
             // case SUCCESS - должно проверяться перед вызовом функции!
             case ACCOUNT_ALREADY_EXISTS:  return "Account already exists!";
             case USERDATA_ALREADY_EXISTS: return "UserData already exists!";
+            case ACCOUNTS_DATA_INVALID:   return "Accounts Data invalid!";
+            case USERS_DATA_INVALID:      return "Users Data invalid!";
 
             default:                      return "Unknow file error!";
         }
@@ -186,6 +188,11 @@ Users::Testable* WrapperDB::
     ) {
         AccountsDB accountsDB;
 
+        if (!accountsDB.isValidData(login, password, accountData))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(ACCOUNTS_DATA_INVALID));
+        }
+
         if (accountsDB.isExists(login, password))
         {
             throw std::runtime_error(_getErrorMsgByStatus(ACCOUNT_ALREADY_EXISTS));
@@ -194,6 +201,11 @@ Users::Testable* WrapperDB::
         UsersDataDB userDataDB;
 
         std::string uuid = accountData.uuid;
+
+        if (!userDataDB.isValidData(uuid, userData))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(USERS_DATA_INVALID));
+        }
 
         if (userDataDB.isExists(uuid))
         {

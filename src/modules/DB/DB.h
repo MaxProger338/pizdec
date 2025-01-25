@@ -52,11 +52,17 @@ namespace DBs
                                                 const __aliases& aliases
                                              ) const noexcept;
 
+
+            bool         _isValidData        (
+                                                const __stringVec&          row,
+                                               const __aliases&            aliases
+                                             ) const noexcept;
+
             // Strings Tool:
             __stringVec _split               (
                                                 const std::string& str, 
                                                 const std::string& sep
-                                             ) const;
+                                             ) const noexcept;
 
         protected:
             mutable PlukiPlukiLib::PlukiPluki* _connect;
@@ -202,6 +208,9 @@ namespace DBs
                                             );
 
             void           addRow           (const __stringVec& data);
+
+            bool           isValidData      (const __stringVec&          row)
+                                                const noexcept;
 
             // Call getAmountRows
             __amountRowsInDB operator()     ()

@@ -215,6 +215,23 @@ void AccountsDB::
 
 // End Add
 
+bool AccountsDB::
+    _isValidData  (
+        const std::string&    login,
+        const std::string&    password,
+        const AccountsDBData& accountsData
+    ) const noexcept
+    {
+        __stringVec vec;
+
+        vec.push_back(login);
+        vec.push_back(password);
+        vec.push_back(accountsData.uuid);
+        vec.push_back(accountsData.is_admin);
+
+        return _db->isValidData(vec);
+    }
+
 AccountsDBData AccountsDB::
     get (
         const std::string& login, 
@@ -240,4 +257,14 @@ void AccountsDB::
         const AccountsDBData& usersData
     ) {
         _add(*_db, login, password, usersData);
+    }
+
+bool AccountsDB::
+    isValidData  (
+        const std::string&    login,
+        const std::string&    password,
+        const AccountsDBData& accountsData
+    ) const noexcept
+    {
+        return _isValidData(login, password, accountsData);
     }
